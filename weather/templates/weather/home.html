@@ -1,0 +1,148 @@
+{% extends 'weather/base.html' %}
+{% load static %}
+
+{% block title %}{% if place %}{{ place.name }} — Meridian{% else %}Meridian — Weather Station{% endif %}{% endblock %}
+
+{% block body_condition %}{{ current.condition|default:"Clear" }}{% endblock %}
+{% block body_daytime %}{{ daytime|default:"day" }}{% endblock %}
+
+{% block content %}
+
+<section class="search-panel">
+    <form method="get" action="{% url 'weather:home' %}" class="search-form">
+        <label for="city-input" class="sr-only">Search for a city</label>
+        <input
+            type="text"
+            id="city-input"
+            name="city"
+            placeholder="Search a city — e.g. Pune, Tokyo, Reykjavik"
+            value="{{ query }}"
+            autocomplete="off"
+        >
+        <button type="submit">Read station <span aria-hidden="true">→</span></button>
+    </form>
+</section>
+
+<div class="layout-grid">
+
+    <div class="main-column">
+        {% if current and place %}
+        <section class="hero-panel">
+            <div class="hero-top">
+                <div class="hero-location">
+                    <span class="eyebrow">Station reading · {{ current.dt|date:"D, d M — H:i" }}</span>
+                    <h1>{{ place.name }}{% if place.country %}<span class="country">, {{ place.country }}</span>{% endif %}</h1>
+                    <p class="condition-desc">{{ current.description }}</p>
+                </div>
+
+                <form method="post" action="{% url 'weather:add_favorite' %}" class="favorite-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ place.name }}">
+                    <input type="hidden" name="country" value="{{ place.country }}">
+                    <input type="hidden" name="lat" value="{{ place.lat }}">
+                    <input type="hidden" name="lon" value="{{ place.lon }}">
+                    <button type="submit" class="favorite-btn {% if is_favorite %}is-favorite{% endif %}" {% if is_favorite %}disabled{% endif %}>
+                        {% if is_favorite %}★ Saved{% else %}☆ Save station{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <div class="hero-temp-row">
+                <div class="temp-display">
+                    <span class="temp-number">{{ current.temp }}</span>
+                    <span class="temp-unit">°C</span>
+                </div>
+                <div class="temp-meta">
+                    <span>Feels like {{ current.feels_like }}°</span>
+                    <span>H {{ current.temp_max }}° · L {{ current.temp_min }}°</span>
+                </div>
+
+                <div class="wind-compass" role="img" aria-label="Wind direction {{ current.wind_deg }} degrees, speed {{ current.wind_speed }} m/s">
+                    <svg viewBox="0 0 140 140">
+                        <circle class="compass-ring" cx="70" cy="70" r="62" />
+                        <circle class="compass-ring compass-ring--inner" cx="70" cy="70" r="44" />
+                        <text class="compass-label" x="70" y="16">N</text>
+                        <text class="compass-label" x="128" y="74">E</text>
+                        <text class="compass-label" x="70" y="132">S</text>
+                        <text class="compass-label" x="12" y="74">W</text>
+                        <g class="compass-needle" style="transform: rotate({{ current.wind_deg }}deg)" transform-origin="70 70">
+                            <path d="M70,18 L78,70 L70,60 L62,70 Z" />
+                        </g>
+                        <circle class="compass-hub" cx="70" cy="70" r="4" />
+                    </svg>
+                    <span class="compass-reading">{{ current.wind_speed }} m/s</span>
+                </div>
+            </div>
+
+            <div class="isobar-divider isobar-divider--tight" aria-hidden="true">
+                <svg viewBox="0 0 1200 24" preserveAspectRatio="none">
+                    <path d="M0,12 C150,2 300,22 450,12 C600,2 750,22 900,12 C1050,2 1150,18 1200,12" />
+                </svg>
+            </div>
+
+            <div class="readout-grid">
+                <div class="readout">
+                    <span class="readout-label">Pressure</span>
+                    <span class="readout-value">{{ current.pressure }} <small>hPa</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Humidity</span>
+                    <span class="readout-value">{{ current.humidity }} <small>%</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Visibility</span>
+                    <span class="readout-value">{{ current.visibility_km }} <small>km</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Sunrise</span>
+                    <span class="readout-value">{{ current.sunrise|date:"H:i" }}</span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Sunset</span>
+                    <span class="readout-value">{{ current.sunset|date:"H:i" }}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="forecast-strip">
+            <h2 class="section-title">Five-day outlook</h2>
+            <div class="forecast-cards">
+                {% for day in forecast %}
+                <article class="forecast-card {% if forloop.first %}forecast-card--today{% endif %}">
+                    <span class="forecast-day">{% if forloop.first %}Today{% else %}{{ day.date|date:"D" }}{% endif %}</span>
+                    <img src="https://openweathermap.org/img/wn/{{ day.icon }}@2x.png" alt="{{ day.description }}" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">{{ day.description }}</span>
+                    <span class="forecast-temps"><strong>{{ day.temp_max }}°</strong> / {{ day.temp_min }}°</span>
+                </article>
+                {% endfor %}
+            </div>
+        </section>
+        {% else %}
+        <section class="empty-panel">
+            <p>No reading yet — search a city above to bring the station online.</p>
+        </section>
+        {% endif %}
+    </div>
+
+    <aside class="sidebar">
+        <h2 class="section-title">Saved stations</h2>
+        {% if favorites %}
+        <ul class="favorites-list">
+            {% for fav in favorites %}
+            <li>
+                <a href="{% url 'weather:home' %}?city={{ fav.name }}">{{ fav.name }}{% if fav.country %}, {{ fav.country }}{% endif %}</a>
+                <form method="post" action="{% url 'weather:remove_favorite' fav.id %}">
+                    {% csrf_token %}
+                    <button type="submit" aria-label="Remove {{ fav.name }}">✕</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty-note">Stations you save will line up here for one-tap access.</p>
+        {% endif %}
+    </aside>
+
+</div>
+
+{% endblock %}

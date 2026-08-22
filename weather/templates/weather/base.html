@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Meridian — Weather Station{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'weather/css/style.css' %}">
+</head>
+<body data-condition="{% block body_condition %}Clear{% endblock %}" data-daytime="{% block body_daytime %}day{% endblock %}">
+    <div class="grain-overlay"></div>
+
+    <header class="site-header">
+        <a href="{% url 'weather:home' %}" class="brand">
+            <span class="brand-mark">◐</span>
+            <span class="brand-text">Meridian<span class="brand-sub">weather station</span></span>
+        </a>
+        <div class="header-time" id="header-clock" data-tz-label>--:--:--</div>
+    </header>
+
+    {% if messages %}
+    <div class="alert-stack">
+        {% for message in messages %}
+        <div class="alert alert--{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="page">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="isobar-divider" aria-hidden="true">
+            <svg viewBox="0 0 1200 40" preserveAspectRatio="none">
+                <path d="M0,20 C150,5 300,35 450,20 C600,5 750,35 900,20 C1050,5 1150,30 1200,20" />
+            </svg>
+        </div>
+    </footer>
+
+    <script src="{% static 'weather/js/main.js' %}"></script>
+</body>
+</html>
