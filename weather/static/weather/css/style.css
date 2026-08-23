@@ -1,5 +1,5 @@
-/* =========================================================
-   Meridian — Weather Station
+﻿/* =========================================================
+   Meridian â€” Weather Station
    Design language: a meteorological instrument panel.
    Dark charcoal base, amber/cyan analog-gauge accents,
    monospace numerals for anything that reads like sensor data.
@@ -516,4 +516,28 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
     .compass-needle path { transition: none; }
+}
+
+
+
+.ai-summary {
+    margin: 10px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--paper);
+    max-width: 46ch;
+}
+
+.ai-summary-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--bg-deep);
+    background: var(--accent);
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    transform: translateY(-1px);
 }

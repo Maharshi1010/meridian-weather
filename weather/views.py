@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+﻿from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 
 from .models import SavedCity
 from . import services
+from . import services_ai
 
 
 def _get_session_key(request):
@@ -32,11 +33,18 @@ def home(request):
 
         is_daytime = current['sunrise'] <= current['dt'] <= current['sunset']
 
+        ai_summary = None
+        try:
+            ai_summary = services_ai.summarize_weather(current, place)
+        except services_ai.AIUnavailableError:
+            pass
+
         context.update({
             'place': place,
             'current': current,
             'forecast': forecast,
             'daytime': 'day' if is_daytime else 'night',
+            'ai_summary': ai_summary,
             'is_favorite': SavedCity.objects.filter(
                 session_key=session_key, name=place['name'], country=place['country']
             ).exists(),

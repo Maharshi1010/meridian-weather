@@ -1,7 +1,7 @@
-{% extends 'weather/base.html' %}
+﻿{% extends 'weather/base.html' %}
 {% load static %}
 
-{% block title %}{% if place %}{{ place.name }} — Meridian{% else %}Meridian — Weather Station{% endif %}{% endblock %}
+{% block title %}{% if place %}{{ place.name }} Meridian{% else %}Meridian   Weather Station{% endif %}{% endblock %}
 
 {% block body_condition %}{{ current.condition|default:"Clear" }}{% endblock %}
 {% block body_daytime %}{{ daytime|default:"day" }}{% endblock %}
@@ -15,11 +15,11 @@
             type="text"
             id="city-input"
             name="city"
-            placeholder="Search a city — e.g. Pune, Tokyo, Reykjavik"
+            placeholder="Search a city "
             value="{{ query }}"
             autocomplete="off"
         >
-        <button type="submit">Read station <span aria-hidden="true">→</span></button>
+        <button type="submit">Read station <span aria-hidden="true"></span></button>
     </form>
 </section>
 
@@ -30,9 +30,12 @@
         <section class="hero-panel">
             <div class="hero-top">
                 <div class="hero-location">
-                    <span class="eyebrow">Station reading · {{ current.dt|date:"D, d M — H:i" }}</span>
+                    <span class="eyebrow">Station reading . {{ current.dt|date:"D, d M  H:i" }}</span>
                     <h1>{{ place.name }}{% if place.country %}<span class="country">, {{ place.country }}</span>{% endif %}</h1>
                     <p class="condition-desc">{{ current.description }}</p>
+                    {% if ai_summary %}
+                    <p class="ai-summary"><span class="ai-summary-tag">AI</span>{{ ai_summary }}</p>
+                    {% endif %}
                 </div>
 
                 <form method="post" action="{% url 'weather:add_favorite' %}" class="favorite-form">
@@ -42,7 +45,7 @@
                     <input type="hidden" name="lat" value="{{ place.lat }}">
                     <input type="hidden" name="lon" value="{{ place.lon }}">
                     <button type="submit" class="favorite-btn {% if is_favorite %}is-favorite{% endif %}" {% if is_favorite %}disabled{% endif %}>
-                        {% if is_favorite %}★ Saved{% else %}☆ Save station{% endif %}
+                        {% if is_favorite %}â˜… Saved{% else %} Save station{% endif %}
                     </button>
                 </form>
             </div>
@@ -54,7 +57,7 @@
                 </div>
                 <div class="temp-meta">
                     <span>Feels like {{ current.feels_like }}°</span>
-                    <span>H {{ current.temp_max }}° · L {{ current.temp_min }}°</span>
+                    <span>H {{ current.temp_max }}· L {{ current.temp_min }}°</span>
                 </div>
 
                 <div class="wind-compass" role="img" aria-label="Wind direction {{ current.wind_deg }} degrees, speed {{ current.wind_speed }} m/s">
@@ -119,7 +122,7 @@
         </section>
         {% else %}
         <section class="empty-panel">
-            <p>No reading yet — search a city above to bring the station online.</p>
+            <p>No reading yet search a city above to bring the station online.</p>
         </section>
         {% endif %}
     </div>
@@ -133,7 +136,7 @@
                 <a href="{% url 'weather:home' %}?city={{ fav.name }}">{{ fav.name }}{% if fav.country %}, {{ fav.country }}{% endif %}</a>
                 <form method="post" action="{% url 'weather:remove_favorite' fav.id %}">
                     {% csrf_token %}
-                    <button type="submit" aria-label="Remove {{ fav.name }}">✕</button>
+                    <button type="submit" aria-label="Remove {{ fav.name }}"></button>
                 </form>
             </li>
             {% endfor %}
@@ -146,3 +149,4 @@
 </div>
 
 {% endblock %}
+

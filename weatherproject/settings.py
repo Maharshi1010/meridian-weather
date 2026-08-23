@@ -33,6 +33,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Your OpenWeatherMap API key (get one free at https://openweathermap.org/api)
 OPENWEATHER_API_KEY = os.environ.get('OPENWEATHER_API_KEY', '')
 
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
 
 # Application definition
 
