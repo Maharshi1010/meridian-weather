@@ -1,5 +1,13 @@
+﻿"""
+Thin client around the OpenWeatherMap API.
+
+Views should never call `requests` directly - they call functions here,
+which return clean, already-shaped Python dicts. This keeps views short
+and means we only have one place to update if the API ever changes.
+"""
+
 import requests
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from django.conf import settings
 
 BASE_URL = "https://api.openweathermap.org/data/2.5"
@@ -7,6 +15,7 @@ GEO_URL = "https://api.openweathermap.org/geo/1.0/direct"
 
 
 class WeatherAPIError(Exception):
+    """Raised when the weather API can't fulfil a request (bad city, no key, etc.)."""
     pass
 
 
@@ -27,6 +36,7 @@ def _get(url, params):
 
 
 def geocode_city(city_name):
+    """Turn a typed city name into (lat, lon, name, country) using the Geocoding API."""
     results = _get(GEO_URL, {"q": city_name, "limit": 1})
     if not results:
         raise WeatherAPIError("City not found. Check the spelling and try again.")
@@ -40,7 +50,15 @@ def geocode_city(city_name):
 
 
 def get_current_weather(lat, lon):
+    """Current conditions for a coordinate pair."""
     data = _get(f"{BASE_URL}/weather", {"lat": lat, "lon": lon})
+
+    # OpenWeatherMap gives raw UTC timestamps plus this city's offset from UTC
+    # (in seconds). We use that offset - not the server's own timezone - so
+    # "sunrise" always means sunrise *in that city*, no matter where this app
+    # is hosted.
+    city_tz = timezone(timedelta(seconds=data.get("timezone", 0)))
+
     return {
         "temp": round(data["main"]["temp"]),
         "feels_like": round(data["main"]["feels_like"]),
@@ -54,20 +72,29 @@ def get_current_weather(lat, lon):
         "condition": data["weather"][0]["main"],
         "description": data["weather"][0]["description"].title(),
         "icon": data["weather"][0]["icon"],
-        "sunrise": datetime.fromtimestamp(data["sys"]["sunrise"]),
-        "sunset": datetime.fromtimestamp(data["sys"]["sunset"]),
+        "sunrise": datetime.fromtimestamp(data["sys"]["sunrise"], tz=city_tz).replace(tzinfo=None),
+        "sunset": datetime.fromtimestamp(data["sys"]["sunset"], tz=city_tz).replace(tzinfo=None),
         "name": data.get("name", ""),
         "country": data["sys"].get("country", ""),
-        "dt": datetime.fromtimestamp(data["dt"]),
+        "dt": datetime.fromtimestamp(data["dt"], tz=city_tz).replace(tzinfo=None),
     }
 
 
 def get_forecast(lat, lon):
+    """
+    5-day / 3-hour forecast, collapsed down to one representative
+    entry per day (the reading closest to midday) so the UI can show
+    a clean 5-card forecast strip instead of 40 raw data points.
+    """
     data = _get(f"{BASE_URL}/forecast", {"lat": lat, "lon": lon})
+
+    # Same fix as get_current_weather: use this city's own UTC offset,
+    # given in data['city']['timezone'] for the forecast endpoint.
+    city_tz = timezone(timedelta(seconds=data.get("city", {}).get("timezone", 0)))
 
     days = {}
     for entry in data["list"]:
-        dt = datetime.fromtimestamp(entry["dt"])
+        dt = datetime.fromtimestamp(entry["dt"], tz=city_tz).replace(tzinfo=None)
         day_key = dt.date()
         hour_distance = abs(dt.hour - 13)  # prefer the slot nearest 1pm
 

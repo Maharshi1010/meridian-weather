@@ -1,0 +1,194 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Delhi Meridian</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/weather/css/style.css">
+</head>
+<body data-condition="Clouds" data-daytime="night">
+    <div class="grain-overlay"></div>
+
+    <header class="site-header">
+        <a href="/" class="brand">
+            <span class="brand-mark">◐</span>
+            <span class="brand-text">Meridian<span class="brand-sub">weather station</span></span>
+        </a>
+        <div class="header-time" id="header-clock" data-tz-label>--:--:--</div>
+    </header>
+
+    
+
+    <main class="page">
+        
+
+<section class="search-panel">
+    <form method="get" action="/" class="search-form">
+        <label for="city-input" class="sr-only">Search for a city</label>
+        <input
+            type="text"
+            id="city-input"
+            name="city"
+            placeholder="Search a city "
+            value="New Delhi"
+            autocomplete="off"
+        >
+        <button type="submit">Read station <span aria-hidden="true"></span></button>
+    </form>
+</section>
+
+<div class="layout-grid">
+
+    <div class="main-column">
+        
+        <section class="hero-panel">
+            <div class="hero-top">
+                <div class="hero-location">
+                    <span class="eyebrow">Station reading . Mon, 24 Aug  13:46</span>
+                    <h1>New Delhi<span class="country">, IN</span></h1>
+                    <p class="condition-desc">Overcast Clouds</p>
+                    
+                    <p class="ai-summary"><span class="ai-summary-tag">AI</span>It’s overcast and humid in New Delhi, with temperatures around 28 °C that feel like 35 °C. Bring a light jacket or layers and keep an umbrella handy, as the humidity is high and there’s little wind.</p>
+                    
+                </div>
+
+                <form method="post" action="/favorites/add/" class="favorite-form">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="McUdpgVOZF2ECtFH1LoewtRDHQXTOsl0FOqgqwCdBjGWt9JB2qN295IotZEkh981">
+                    <input type="hidden" name="name" value="New Delhi">
+                    <input type="hidden" name="country" value="IN">
+                    <input type="hidden" name="lat" value="28.6138954">
+                    <input type="hidden" name="lon" value="77.2090057">
+                    <button type="submit" class="favorite-btn " >
+                         Save station
+                    </button>
+                </form>
+            </div>
+
+            <div class="hero-temp-row">
+                <div class="temp-display">
+                    <span class="temp-number">28</span>
+                    <span class="temp-unit">°C</span>
+                </div>
+                <div class="temp-meta">
+                    <span>Feels like 35°</span>
+                    <span>H 29· L 28°</span>
+                </div>
+
+                <div class="wind-compass" role="img" aria-label="Wind direction 0 degrees, speed 1.03 m/s">
+                    <svg viewBox="0 0 140 140">
+                        <circle class="compass-ring" cx="70" cy="70" r="62" />
+                        <circle class="compass-ring compass-ring--inner" cx="70" cy="70" r="44" />
+                        <text class="compass-label" x="70" y="16">N</text>
+                        <text class="compass-label" x="128" y="74">E</text>
+                        <text class="compass-label" x="70" y="132">S</text>
+                        <text class="compass-label" x="12" y="74">W</text>
+                        <g class="compass-needle" style="transform: rotate(0deg)" transform-origin="70 70">
+                            <path d="M70,18 L78,70 L70,60 L62,70 Z" />
+                        </g>
+                        <circle class="compass-hub" cx="70" cy="70" r="4" />
+                    </svg>
+                    <span class="compass-reading">1.03 m/s</span>
+                </div>
+            </div>
+
+            <div class="isobar-divider isobar-divider--tight" aria-hidden="true">
+                <svg viewBox="0 0 1200 24" preserveAspectRatio="none">
+                    <path d="M0,12 C150,2 300,22 450,12 C600,2 750,22 900,12 C1050,2 1150,18 1200,12" />
+                </svg>
+            </div>
+
+            <div class="readout-grid">
+                <div class="readout">
+                    <span class="readout-label">Pressure</span>
+                    <span class="readout-value">1002 <small>hPa</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Humidity</span>
+                    <span class="readout-value">100 <small>%</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Visibility</span>
+                    <span class="readout-value">10.0 <small>km</small></span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Sunrise</span>
+                    <span class="readout-value">00:25</span>
+                </div>
+                <div class="readout">
+                    <span class="readout-label">Sunset</span>
+                    <span class="readout-value">13:22</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="forecast-strip">
+            <h2 class="section-title">Five-day outlook</h2>
+            <div class="forecast-cards">
+                
+                <article class="forecast-card forecast-card--today">
+                    <span class="forecast-day">Today</span>
+                    <img src="https://openweathermap.org/img/wn/04n@2x.png" alt="Overcast Clouds" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">Overcast Clouds</span>
+                    <span class="forecast-temps"><strong>28°</strong> / 28°</span>
+                </article>
+                
+                <article class="forecast-card ">
+                    <span class="forecast-day">Tue</span>
+                    <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="Few Clouds" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">Few Clouds</span>
+                    <span class="forecast-temps"><strong>34°</strong> / 34°</span>
+                </article>
+                
+                <article class="forecast-card ">
+                    <span class="forecast-day">Wed</span>
+                    <img src="https://openweathermap.org/img/wn/04d@2x.png" alt="Broken Clouds" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">Broken Clouds</span>
+                    <span class="forecast-temps"><strong>41°</strong> / 41°</span>
+                </article>
+                
+                <article class="forecast-card ">
+                    <span class="forecast-day">Thu</span>
+                    <img src="https://openweathermap.org/img/wn/04d@2x.png" alt="Overcast Clouds" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">Overcast Clouds</span>
+                    <span class="forecast-temps"><strong>38°</strong> / 38°</span>
+                </article>
+                
+                <article class="forecast-card ">
+                    <span class="forecast-day">Fri</span>
+                    <img src="https://openweathermap.org/img/wn/04d@2x.png" alt="Overcast Clouds" class="forecast-icon" loading="lazy">
+                    <span class="forecast-desc">Overcast Clouds</span>
+                    <span class="forecast-temps"><strong>40°</strong> / 40°</span>
+                </article>
+                
+            </div>
+        </section>
+        
+    </div>
+
+    <aside class="sidebar">
+        <h2 class="section-title">Saved stations</h2>
+        
+        <p class="empty-note">Stations you save will line up here for one-tap access.</p>
+        
+    </aside>
+
+</div>
+
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="isobar-divider" aria-hidden="true">
+            <svg viewBox="0 0 1200 40" preserveAspectRatio="none">
+                <path d="M0,20 C150,5 300,35 450,20 C600,5 750,35 900,20 C1050,5 1150,30 1200,20" />
+            </svg>
+        </div>
+    </footer>
+
+    <script src="/static/weather/js/main.js"></script>
+</body>
+</html>
