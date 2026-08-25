@@ -1,11 +1,3 @@
-﻿"""
-Thin client around the OpenWeatherMap API.
-
-Views should never call `requests` directly - they call functions here,
-which return clean, already-shaped Python dicts. This keeps views short
-and means we only have one place to update if the API ever changes.
-"""
-
 import requests
 from datetime import datetime, timezone, timedelta
 from django.conf import settings
@@ -15,7 +7,6 @@ GEO_URL = "https://api.openweathermap.org/geo/1.0/direct"
 
 
 class WeatherAPIError(Exception):
-    """Raised when the weather API can't fulfil a request (bad city, no key, etc.)."""
     pass
 
 
