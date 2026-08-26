@@ -1,5 +1,5 @@
 ﻿/* =========================================================
-   Meridian â€” Weather Station
+   Meridian — Weather Station
    Design language: a meteorological instrument panel.
    Dark charcoal base, amber/cyan analog-gauge accents,
    monospace numerals for anything that reads like sensor data.
@@ -248,6 +248,28 @@ a { color: inherit; }
     font-size: 15px;
 }
 
+.ai-summary {
+    margin: 10px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--paper);
+    max-width: 46ch;
+}
+
+.ai-summary-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--bg-deep);
+    background: var(--accent);
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-right: 8px;
+    vertical-align: middle;
+    transform: translateY(-1px);
+}
+
 .favorite-form { margin: 0; }
 
 .favorite-btn {
@@ -392,6 +414,95 @@ a { color: inherit; }
 
 .forecast-strip { margin-top: 28px; }
 
+.ask-panel {
+    margin-top: 28px;
+    background: linear-gradient(155deg, var(--bg-panel), var(--bg-panel-alt));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(20px, 3vw, 28px);
+    box-shadow: var(--shadow-panel);
+}
+
+.ask-panel .section-title {
+    margin-bottom: 4px;
+}
+
+.ask-panel-hint {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--paper-dim);
+}
+
+.ask-form {
+    display: flex;
+    gap: 10px;
+}
+
+.ask-form input {
+    flex: 1;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+    color: var(--paper);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
+
+.ask-form input:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+.ask-form input::placeholder { color: var(--paper-dim); }
+
+.ask-form button {
+    background: var(--accent);
+    color: #14171f;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 26px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    white-space: nowrap;
+}
+
+.ask-form button:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); }
+.ask-form button:disabled { opacity: 0.5; cursor: default; transform: none; }
+.ask-form button:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+
+.ask-answer {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px 10px 10px 4px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--paper);
+    animation: ask-answer-in 0.25s ease;
+}
+
+@keyframes ask-answer-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ask-answer .ai-summary-tag {
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 2px;
+}
+
+.ask-answer.is-error {
+    border-left-color: var(--rose);
+    color: #f0b3a3;
+}
+
 .forecast-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -516,28 +627,4 @@ a { color: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
     .compass-needle path { transition: none; }
-}
-
-
-
-.ai-summary {
-    margin: 10px 0 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--paper);
-    max-width: 46ch;
-}
-
-.ai-summary-tag {
-    display: inline-block;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    color: var(--bg-deep);
-    background: var(--accent);
-    padding: 2px 5px;
-    border-radius: 4px;
-    margin-right: 8px;
-    vertical-align: middle;
-    transform: translateY(-1px);
 }

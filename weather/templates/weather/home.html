@@ -1,7 +1,7 @@
 ﻿{% extends 'weather/base.html' %}
 {% load static %}
 
-{% block title %}{% if place %}{{ place.name }} Meridian{% else %}Meridian   Weather Station{% endif %}{% endblock %}
+{% block title %}{% if place %}{{ place.name }} &mdash; Meridian{% else %}Meridian &mdash; Weather Station{% endif %}{% endblock %}
 
 {% block body_condition %}{{ current.condition|default:"Clear" }}{% endblock %}
 {% block body_daytime %}{{ daytime|default:"day" }}{% endblock %}
@@ -15,11 +15,11 @@
             type="text"
             id="city-input"
             name="city"
-            placeholder="Search a city "
+            placeholder="Search a city &mdash; e.g. Pune, Tokyo, Reykjavik"
             value="{{ query }}"
             autocomplete="off"
         >
-        <button type="submit">Read station <span aria-hidden="true"></span></button>
+        <button type="submit">Read station <span aria-hidden="true">&rarr;</span></button>
     </form>
 </section>
 
@@ -30,11 +30,13 @@
         <section class="hero-panel">
             <div class="hero-top">
                 <div class="hero-location">
-                    <span class="eyebrow">Station reading . {{ current.dt|date:"D, d M  H:i" }}</span>
+                    <span class="eyebrow">Station reading &middot; {{ current.dt|date:"D, d M" }} &mdash; {{ current.dt|date:"H:i" }}</span>
                     <h1>{{ place.name }}{% if place.country %}<span class="country">, {{ place.country }}</span>{% endif %}</h1>
                     <p class="condition-desc">{{ current.description }}</p>
                     {% if ai_summary %}
-                    <p class="ai-summary"><span class="ai-summary-tag">AI</span>{{ ai_summary }}</p>
+                    <p class="ai-summary">
+                        <span class="ai-summary-tag">AI</span>{{ ai_summary }}
+                    </p>
                     {% endif %}
                 </div>
 
@@ -45,7 +47,7 @@
                     <input type="hidden" name="lat" value="{{ place.lat }}">
                     <input type="hidden" name="lon" value="{{ place.lon }}">
                     <button type="submit" class="favorite-btn {% if is_favorite %}is-favorite{% endif %}" {% if is_favorite %}disabled{% endif %}>
-                        {% if is_favorite %}â˜… Saved{% else %} Save station{% endif %}
+                        {% if is_favorite %}&#9733; Saved{% else %}&#9734; Save station{% endif %}
                     </button>
                 </form>
             </div>
@@ -53,11 +55,11 @@
             <div class="hero-temp-row">
                 <div class="temp-display">
                     <span class="temp-number">{{ current.temp }}</span>
-                    <span class="temp-unit">°C</span>
+                    <span class="temp-unit">&deg;C</span>
                 </div>
                 <div class="temp-meta">
-                    <span>Feels like {{ current.feels_like }}°</span>
-                    <span>H {{ current.temp_max }}· L {{ current.temp_min }}°</span>
+                    <span>Feels like {{ current.feels_like }}&deg;</span>
+                    <span>H {{ current.temp_max }}&deg; &middot; L {{ current.temp_min }}&deg;</span>
                 </div>
 
                 <div class="wind-compass" role="img" aria-label="Wind direction {{ current.wind_deg }} degrees, speed {{ current.wind_speed }} m/s">
@@ -107,6 +109,23 @@
             </div>
         </section>
 
+        <section class="ask-panel">
+            <h2 class="section-title">Ask the station</h2>
+            <p class="ask-panel-hint">Ask anything about today's conditions or the outlook ahead.</p>
+            <form id="ask-form" class="ask-form" data-city="{{ place.name }}" data-ask-url="{% url 'weather:ask_ai' %}">
+                <input
+                    type="text"
+                    id="ask-input"
+                    placeholder="e.g. Should I go for a run this evening?"
+                    maxlength="300"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <button type="submit">Ask</button>
+            </form>
+            <div id="ask-answer" class="ask-answer" hidden></div>
+        </section>
+
         <section class="forecast-strip">
             <h2 class="section-title">Five-day outlook</h2>
             <div class="forecast-cards">
@@ -115,14 +134,14 @@
                     <span class="forecast-day">{% if forloop.first %}Today{% else %}{{ day.date|date:"D" }}{% endif %}</span>
                     <img src="https://openweathermap.org/img/wn/{{ day.icon }}@2x.png" alt="{{ day.description }}" class="forecast-icon" loading="lazy">
                     <span class="forecast-desc">{{ day.description }}</span>
-                    <span class="forecast-temps"><strong>{{ day.temp_max }}°</strong> / {{ day.temp_min }}°</span>
+                    <span class="forecast-temps"><strong>{{ day.temp_max }}&deg;</strong> / {{ day.temp_min }}&deg;</span>
                 </article>
                 {% endfor %}
             </div>
         </section>
         {% else %}
         <section class="empty-panel">
-            <p>No reading yet search a city above to bring the station online.</p>
+            <p>No reading yet &mdash; search a city above to bring the station online.</p>
         </section>
         {% endif %}
     </div>
@@ -136,7 +155,7 @@
                 <a href="{% url 'weather:home' %}?city={{ fav.name }}">{{ fav.name }}{% if fav.country %}, {{ fav.country }}{% endif %}</a>
                 <form method="post" action="{% url 'weather:remove_favorite' fav.id %}">
                     {% csrf_token %}
-                    <button type="submit" aria-label="Remove {{ fav.name }}"></button>
+                    <button type="submit" aria-label="Remove {{ fav.name }}">&#10005;</button>
                 </form>
             </li>
             {% endfor %}
@@ -149,4 +168,3 @@
 </div>
 
 {% endblock %}
-
