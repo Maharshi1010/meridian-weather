@@ -3,7 +3,7 @@
 A Django + PostgreSQL weather app. Search any city for current conditions and a
 5-day forecast, and save favorite cities for quick access.
 
-## How it's built (quick map of the codebase)
+## How it's built:
 
 ```
 weather_app/
