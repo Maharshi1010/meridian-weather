@@ -44,10 +44,7 @@ def get_current_weather(lat, lon):
     """Current conditions for a coordinate pair."""
     data = _get(f"{BASE_URL}/weather", {"lat": lat, "lon": lon})
 
-    # OpenWeatherMap gives raw UTC timestamps plus this city's offset from UTC
-    # (in seconds). We use that offset - not the server's own timezone - so
-    # "sunrise" always means sunrise *in that city*, no matter where this app
-    # is hosted.
+    # OpenWeatherMap gives raw UTC timestamps and this city's offset from UTC
     city_tz = timezone(timedelta(seconds=data.get("timezone", 0)))
 
     return {
@@ -79,8 +76,7 @@ def get_forecast(lat, lon):
     """
     data = _get(f"{BASE_URL}/forecast", {"lat": lat, "lon": lon})
 
-    # Same fix as get_current_weather: use this city's own UTC offset,
-    # given in data['city']['timezone'] for the forecast endpoint.
+    # Same fix as get_current_weather: use this city's own UTC offset
     city_tz = timezone(timedelta(seconds=data.get("city", {}).get("timezone", 0)))
 
     days = {}
