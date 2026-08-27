@@ -9,10 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load variables from the .env file sitting next to manage.py
 load_dotenv(BASE_DIR / '.env')
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
     'DJANGO_SECRET_KEY',
@@ -24,13 +20,11 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
-# Render (and most hosts) serve over a subdomain like yourapp.onrender.com —
-# Django's CSRF protection needs to explicitly trust that origin in production.
 CSRF_TRUSTED_ORIGINS = [
     origin for origin in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if origin
 ]
 
-# Your OpenWeatherMap API key (get one free at https://openweathermap.org/api)
+# OpenWeatherMap API key 
 OPENWEATHER_API_KEY = os.environ.get('OPENWEATHER_API_KEY', '')
 
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
@@ -79,12 +73,6 @@ WSGI_APPLICATION = 'weatherproject.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
-#
-# Locally, we build the connection from DB_NAME/DB_USER/etc. in .env.
-# On Render (and most hosts), a single DATABASE_URL env var is provided
-# instead — dj_database_url parses that into the same settings dict.
-
 if os.environ.get('DATABASE_URL'):
     DATABASES = {
         'default': dj_database_url.parse(os.environ['DATABASE_URL'], conn_max_age=600)
@@ -103,8 +91,6 @@ else:
 
 
 # Password validation
-# https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -122,8 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/6.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -134,8 +118,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.1/howto/static-files/
-
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STORAGES = {
@@ -144,16 +126,12 @@ STORAGES = {
     },
 }
 
-
-# Security settings that should only be strict in production (when DEBUG=False),
-# so local development over plain http:// still works.
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7  # 1 week; raise once confident
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 7 
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    # Render (like Heroku) terminates HTTPS at its own proxy and forwards to
-    # our app over plain HTTP, adding this header to say "it was really https".
-    # Without this, Django can't tell and redirects every request forever.
+
+    # With this, Django tell and redirects every request forever.
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
