@@ -1,12 +1,3 @@
-﻿"""
-Thin client around the Groq API (fast, free-tier inference for open models
-like Llama). Same philosophy as services.py: views never call the AI SDK
-directly, they call functions here. This file's one hard rule is that the
-model is only ever asked to *describe* weather data it's handed - never to
-predict or invent numbers itself. That keeps it accurate no matter what it
-says, since the actual forecast still comes entirely from OpenWeatherMap.
-"""
-
 from groq import Groq
 from django.conf import settings
 
