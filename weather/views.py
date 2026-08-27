@@ -38,8 +38,7 @@ def home(request):
 
         is_daytime = current['sunrise'] <= current['dt'] <= current['sunset']
 
-        # AI summary is a nice-to-have, not critical - if it fails (missing key,
-        # API hiccup, etc.) the page still works fine without it.
+        # AI summary
         ai_summary = None
         try:
             ai_summary = services_ai.summarize_weather(current, place)
